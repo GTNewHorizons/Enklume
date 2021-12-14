@@ -40,15 +40,14 @@ public abstract class NBTag {
 
     static Type lastType;
 
-    public static NBTag create(int t) {
+    public static NBTag create(int t) throws IOException {
         try {
             NBTag tag = create(Type.values()[t]);
             lastType = Type.values()[t];
-            //System.out.println("found"+lastType);
             return tag;
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Out of bounds type exception: " + t + " Last valid type was : " + lastType);
-            throw new RuntimeException("Well fuck");
+            System.out.println("Out of bounds type exception: " + t + " Last valid type was : " + lastType + ". Probably caused by a corrupt file. Will ignore this particular NBT entry!");
+            throw new IOException("Corrupted File");
         }
     }
 
