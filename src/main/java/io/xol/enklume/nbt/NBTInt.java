@@ -1,7 +1,7 @@
 package io.xol.enklume.nbt;
 
-import java.io.IOException;
 import java.io.DataInputStream;
+import java.io.IOException;
 
 public class NBTInt extends NBTNamed {
     public int data;

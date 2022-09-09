@@ -1,7 +1,7 @@
 package io.xol.enklume.nbt;
 
-import java.io.IOException;
 import java.io.DataInputStream;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 public class NBTString extends NBTNamed {
@@ -24,8 +24,7 @@ public class NBTString extends NBTNamed {
     }
 
     public String getText() {
-        if (data == null)
-            return "";
+        if (data == null) return "";
         return data;
     }
 }

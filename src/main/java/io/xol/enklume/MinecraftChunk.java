@@ -4,7 +4,6 @@ import io.xol.enklume.nbt.NBTByte;
 import io.xol.enklume.nbt.NBTByteArray;
 import io.xol.enklume.nbt.NBTCompound;
 import io.xol.enklume.nbt.NBTag;
-
 import java.io.ByteArrayInputStream;
 
 public class MinecraftChunk {
@@ -27,8 +26,7 @@ public class MinecraftChunk {
         ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
         root = (NBTCompound) NBTag.parseInputStream(bais);
 
-        for (int i = 0; i < 16; i++)
-            sectionsMap[i] = -1;
+        for (int i = 0; i < 16; i++) sectionsMap[i] = -1;
         for (int i = 0; i < 16; i++) {
             NBTCompound section = (NBTCompound) root.getTag("Level.Sections." + i);
             if (section != null) {
@@ -36,15 +34,13 @@ public class MinecraftChunk {
                 sectionsMap[y] = i;
 
                 NBTag blocksNBT = root.getTag("Level.Sections." + i + ".Blocks");
-                if (blocksNBT != null)
-                    blocks[i] = ((NBTByteArray) blocksNBT).data;
+                if (blocksNBT != null) blocks[i] = ((NBTByteArray) blocksNBT).data;
             }
         }
 
         for (int i = 0; i < 16; i++) {
             NBTag blocksNBT = root.getTag("Level.Sections." + i + ".Blocks");
-            if (blocksNBT != null)
-                blocks[i] = ((NBTByteArray) blocksNBT).data;
+            if (blocksNBT != null) blocks[i] = ((NBTByteArray) blocksNBT).data;
             NBTag mDataNBT = root.getTag("Level.Sections." + i + ".Data");
             if (mDataNBT != null) {
                 mData[i] = ((NBTByteArray) mDataNBT).data;
@@ -57,8 +53,7 @@ public class MinecraftChunk {
     }
 
     public int getBlockID(int x, int y, int z) {
-        if (root == null)
-            return 0;
+        if (root == null) return 0;
 
         int i = sectionsMap[y / 16];
         if (y > 0 && y < 256) {
@@ -91,7 +86,7 @@ public class MinecraftChunk {
                     y %= 16;
                     int index = y * 16 * 16 + z * 16 + x;
                     byte unfilteredMeta = mData[i][index / 2];
-                    //4-bit nibbles, classic bullshit !
+                    // 4-bit nibbles, classic bullshit !
                     if (index % 2 != 0) {
                         return (unfilteredMeta >> 4) & 0xF;
                     } else {
