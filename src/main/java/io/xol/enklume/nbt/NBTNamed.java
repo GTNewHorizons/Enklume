@@ -15,6 +15,7 @@ public class NBTNamed extends NBTag {
             int nameSize = is.getShort();
             try {
                 tagName = new String(is.array(), is.arrayOffset() + is.position(), nameSize, StandardCharsets.UTF_8);
+                is.position(is.position() + nameSize);
                 // System.out.println("read tag named :"+tagName);
             } catch (Exception e) {
                 tagName = "<ERROR>";
