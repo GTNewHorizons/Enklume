@@ -1,7 +1,7 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class NBTByteArray extends NBTNamed {
 
@@ -10,17 +10,10 @@ public class NBTByteArray extends NBTNamed {
     public byte[] data;
 
     @Override
-    void feed(DataInputStream is) throws IOException {
+    void feed(ByteBuffer is) throws IOException {
         super.feed(is);
-        size = is.read() << 24;
-        size += is.read() << 16;
-        size += is.read() << 8;
-        size += is.read();
+        size = is.getInt();
         data = new byte[size];
-        try {
-            is.read(data);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        is.get(data);
     }
 }
