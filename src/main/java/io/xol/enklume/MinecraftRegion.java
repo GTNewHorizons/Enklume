@@ -23,11 +23,12 @@ public class MinecraftRegion {
         byte[] buffer = new byte[1024 * 4];
         is.readFully(buffer);
         for (int i = 0; i < 1024; i++) {
-            locations[i] = buffer[i * 4] << 16;
-            locations[i] += buffer[i * 4 + 1] << 8;
-            locations[i] += buffer[i * 4 + 2];
+            // & 0xFF to avoid negative numbers (read as unsigned byte)
+            locations[i] = (buffer[i * 4] & 0xFF) << 16;
+            locations[i] += (buffer[i * 4 + 1] & 0xFF) << 8;
+            locations[i] += buffer[i * 4 + 2] & 0xFF;
 
-            sizes[i] = buffer[i * 4 + 3];
+            sizes[i] = buffer[i * 4 + 3] & 0xFF;
         }
         // Discard the timestamp bytes, we don't care.
         is.seek(is.getFilePointer() + 1024 * 4);
@@ -69,7 +70,7 @@ public class MinecraftRegion {
                 inflater.reset();
                 inflater.setInput(compressedData);
 
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[1024 * 1024];
                 while (!inflater.finished()) {
                     int c = inflater.inflate(buffer);
                     allBytes.add(buffer, 0, c);
