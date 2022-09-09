@@ -15,6 +15,7 @@ public class NBTString extends NBTNamed {
 
         try {
             data = new String(is.array(), is.arrayOffset() + is.position(), size, StandardCharsets.UTF_8);
+            is.position(is.position() + size);
             // System.out.println("read tag named :"+tagName);
         } catch (Exception e) {
             data = "<ERROR>";
