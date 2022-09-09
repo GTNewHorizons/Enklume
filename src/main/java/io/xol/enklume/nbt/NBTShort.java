@@ -1,16 +1,14 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class NBTShort extends NBTNamed {
     public short data;
 
     @Override
-    void feed(DataInputStream is) throws IOException {
+    void feed(ByteBuffer is) throws IOException {
         super.feed(is);
-        int i = is.read() << 8;
-        i += is.read();
-        data = (short) i;
+        data = is.getShort();
     }
 }

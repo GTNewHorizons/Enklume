@@ -1,7 +1,7 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class NBTNamed extends NBTag {
@@ -10,17 +10,14 @@ public class NBTNamed extends NBTag {
     boolean list = false;
 
     @Override
-    void feed(DataInputStream is) throws IOException {
+    void feed(ByteBuffer is) throws IOException {
         if (!list) {
-            int nameSize = 0;
-            nameSize += is.read() << 8;
-            nameSize += is.read();
-            byte[] n = new byte[nameSize];
+            int nameSize = is.getShort();
             try {
-                is.readFully(n);
-                tagName = new String(n, StandardCharsets.UTF_8);
+                tagName = new String(is.array(), is.arrayOffset() + is.position(), nameSize, StandardCharsets.UTF_8);
                 // System.out.println("read tag named :"+tagName);
             } catch (Exception e) {
+                tagName = "<ERROR>";
                 e.printStackTrace();
             }
         }
@@ -31,7 +28,7 @@ public class NBTNamed extends NBTag {
     }
 
     public void setNamedFromListIndex(int i) {
-        tagName = i + "";
+        tagName = Integer.toString(i);
         list = true;
     }
 }

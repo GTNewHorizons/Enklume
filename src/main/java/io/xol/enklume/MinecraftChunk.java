@@ -4,7 +4,7 @@ import io.xol.enklume.nbt.NBTByte;
 import io.xol.enklume.nbt.NBTByteArray;
 import io.xol.enklume.nbt.NBTCompound;
 import io.xol.enklume.nbt.NBTag;
-import java.io.ByteArrayInputStream;
+import java.nio.ByteBuffer;
 
 public class MinecraftChunk {
     NBTCompound root = null;
@@ -21,10 +21,9 @@ public class MinecraftChunk {
         this.z = z;
     }
 
-    public MinecraftChunk(int x, int z, byte[] byteArray) {
+    public MinecraftChunk(int x, int z, ByteBuffer byteArray) {
         this(x, z);
-        ByteArrayInputStream bais = new ByteArrayInputStream(byteArray);
-        root = (NBTCompound) NBTag.parseInputStream(bais);
+        root = (NBTCompound) NBTag.parseByteBuffer(byteArray);
 
         for (int i = 0; i < 16; i++) sectionsMap[i] = -1;
         for (int i = 0; i < 16; i++) {

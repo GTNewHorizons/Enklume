@@ -1,21 +1,22 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 /**
  * Clean code is for suckers anyway
  */
 public abstract class NBTag {
-    abstract void feed(DataInputStream is) throws IOException;
+    abstract void feed(ByteBuffer bytes) throws IOException;
 
-    public static NBTag parseInputStream(InputStream bais) {
+    public static NBTag parseByteBuffer(ByteBuffer bytes) {
+        bytes.order(ByteOrder.BIG_ENDIAN);
         try {
-            int type = bais.read();
+            int type = bytes.get();
             if (type == -1) return null;
-            NBTag tag = NBTag.create(type);
-            tag.feed(new DataInputStream(bais));
+            NBTag tag = create(type);
+            tag.feed(bytes);
             return tag;
         } catch (IOException e) {
             return null;

@@ -1,6 +1,9 @@
 package io.xol.enklume;
 
+import gnu.trove.list.array.TByteArrayList;
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -8,6 +11,7 @@ public class MinecraftRegion {
 
     int[] locations = new int[1024];
     int[] sizes = new int[1024];
+    Inflater inflater = new Inflater();
 
     RandomAccessFile is;
     private final MinecraftChunk[][] chunks = new MinecraftChunk[32][32];
@@ -16,23 +20,22 @@ public class MinecraftRegion {
         is = new RandomAccessFile(regionFile, "r");
         // First read the 1024 chunks offsets
         // int n = 0;
+        byte[] buffer = new byte[1024 * 4];
+        is.readFully(buffer);
         for (int i = 0; i < 1024; i++) {
-            locations[i] += is.read() << 16;
-            locations[i] += is.read() << 8;
-            locations[i] += is.read();
+            locations[i] = buffer[i * 4] << 16;
+            locations[i] += buffer[i * 4 + 1] << 8;
+            locations[i] += buffer[i * 4 + 2];
 
-            sizes[i] += is.read();
+            sizes[i] = buffer[i * 4 + 3];
         }
         // Discard the timestamp bytes, we don't care.
-        byte[] osef = new byte[4];
-        for (int i = 0; i < 1024; i++) {
-            is.read(osef);
-        }
+        is.seek(is.getFilePointer() + 1024 * 4);
 
         for (int x = 0; x < 32; x++) for (int z = 0; z < 32; z++) chunks[x][z] = getChunkInternal(x, z);
     }
 
-    int offset(int x, int z) {
+    final int offset(int x, int z) {
         return ((x & 31) + (z & 31) * 32);
     }
 
@@ -60,20 +63,21 @@ public class MinecraftRegion {
                 byte[] compressedData = new byte[compressedLength];
                 is.read(compressedData);
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                TByteArrayList allBytes = new TByteArrayList();
 
                 // Unzip the ordeal
-                Inflater inflater = new Inflater();
+                inflater.reset();
                 inflater.setInput(compressedData);
 
                 byte[] buffer = new byte[4096];
                 while (!inflater.finished()) {
                     int c = inflater.inflate(buffer);
-                    baos.write(buffer, 0, c);
+                    allBytes.add(buffer, 0, c);
                 }
-                baos.close();
 
-                return new MinecraftChunk(x, z, baos.toByteArray());
+                ByteBuffer byteBuffer = ByteBuffer.wrap(allBytes.toArray());
+                byteBuffer.order(ByteOrder.BIG_ENDIAN);
+                return new MinecraftChunk(x, z, byteBuffer);
             }
         }
         return new MinecraftChunk(x, z);
@@ -81,5 +85,6 @@ public class MinecraftRegion {
 
     public void close() throws IOException {
         is.close();
+        inflater.end();
     }
 }
