@@ -14,8 +14,8 @@ public class MinecraftRegion {
 
     public MinecraftRegion(File regionFile) throws IOException, DataFormatException {
         is = new RandomAccessFile(regionFile, "r");
-        //First read the 1024 chunks offsets
-        //int n = 0;
+        // First read the 1024 chunks offsets
+        // int n = 0;
         for (int i = 0; i < 1024; i++) {
             locations[i] += is.read() << 16;
             locations[i] += is.read() << 8;
@@ -23,15 +23,13 @@ public class MinecraftRegion {
 
             sizes[i] += is.read();
         }
-        //Discard the timestamp bytes, we don't care.
+        // Discard the timestamp bytes, we don't care.
         byte[] osef = new byte[4];
         for (int i = 0; i < 1024; i++) {
             is.read(osef);
         }
 
-        for (int x = 0; x < 32; x++)
-            for (int z = 0; z < 32; z++)
-                chunks[x][z] = getChunkInternal(x, z);
+        for (int x = 0; x < 32; x++) for (int z = 0; z < 32; z++) chunks[x][z] = getChunkInternal(x, z);
     }
 
     int offset(int x, int z) {
@@ -45,26 +43,26 @@ public class MinecraftRegion {
     private MinecraftChunk getChunkInternal(int x, int z) throws DataFormatException, IOException {
         int l = offset(x, z);
         if (sizes[l] > 0) {
-            //Chunk non-void, load it
+            // Chunk non-void, load it
             is.seek(locations[l] * 4096L);
-            //Read 4-bytes of data length
+            // Read 4-bytes of data length
             int compressedLength = 0;
             compressedLength += is.read() << 24;
             compressedLength += is.read() << 16;
             compressedLength += is.read() << 8;
             compressedLength += is.read();
-            //Read compression mode
+            // Read compression mode
             int compression = is.read();
             if (compression != 2) {
-                throw new DataFormatException("\"Fatal error : compression scheme not Zlib. (\" + compression + \") at \" + is.getFilePointer() + \" l = \" + l + \" s= \" + sizes[l]");
-            }
-            else {
+                throw new DataFormatException(
+                        "\"Fatal error : compression scheme not Zlib. (\" + compression + \") at \" + is.getFilePointer() + \" l = \" + l + \" s= \" + sizes[l]");
+            } else {
                 byte[] compressedData = new byte[compressedLength];
                 is.read(compressedData);
 
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-                //Unzip the ordeal
+                // Unzip the ordeal
                 Inflater inflater = new Inflater();
                 inflater.setInput(compressedData);
 

@@ -13,8 +13,7 @@ public abstract class NBTag {
     public static NBTag parseInputStream(InputStream bais) {
         try {
             int type = bais.read();
-            if (type == -1)
-                return null;
+            if (type == -1) return null;
             NBTag tag = NBTag.create(type);
             tag.feed(new DataInputStream(bais));
             return tag;
@@ -46,7 +45,8 @@ public abstract class NBTag {
             lastType = Type.values()[t];
             return tag;
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Out of bounds type exception: " + t + " Last valid type was : " + lastType + ". Probably caused by a corrupt file. Will ignore this particular NBT entry!");
+            System.out.println("Out of bounds type exception: " + t + " Last valid type was : " + lastType
+                    + ". Probably caused by a corrupt file. Will ignore this particular NBT entry!");
             throw new IOException("Corrupted File");
         }
     }
@@ -85,6 +85,17 @@ public abstract class NBTag {
     }
 
     public enum Type {
-        TAG_END, TAG_BYTE, TAG_SHORT, TAG_INT, TAG_LONG, TAG_FLOAT, TAG_DOUBLE, TAG_BYTE_ARRAY, TAG_STRING, TAG_LIST, TAG_COMPOUND, TAG_INT_ARRAY
+        TAG_END,
+        TAG_BYTE,
+        TAG_SHORT,
+        TAG_INT,
+        TAG_LONG,
+        TAG_FLOAT,
+        TAG_DOUBLE,
+        TAG_BYTE_ARRAY,
+        TAG_STRING,
+        TAG_LIST,
+        TAG_COMPOUND,
+        TAG_INT_ARRAY
     }
 }

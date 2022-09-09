@@ -20,12 +20,9 @@ public class SignParseUtil {
      * something along the lines of what the actual Minecraft client could read out of it
      */
     public static String parseSignData(String data) {
-        if (data == null)
-            return "";
-        if (data.endsWith("null"))
-            return "";
-        if (data.startsWith("\""))
-            return data.substring(1, data.length() - 1);
+        if (data == null) return "";
+        if (data.endsWith("null")) return "";
+        if (data.startsWith("\"")) return data.substring(1, data.length() - 1);
         if (data.startsWith("{")) {
             JSONObject jSonObject;
             try {
@@ -36,8 +33,7 @@ public class SignParseUtil {
                 String extra = "";
                 if (extraObject != null) {
                     Object arrayObject = (((JSONArray) extraObject).get(0));
-                    if (arrayObject instanceof String)
-                        extra = (String) arrayObject;
+                    if (arrayObject instanceof String) extra = (String) arrayObject;
                     else if (arrayObject instanceof JSONObject) {
                         extra = (String) ((JSONObject) (((JSONArray) extraObject).get(0))).get("text");
                     }
@@ -45,7 +41,7 @@ public class SignParseUtil {
 
                 String text = (String) jSonObject.get("text");
 
-                //Get whatever one is good
+                // Get whatever one is good
                 return text.length() > extra.length() ? text : extra;
             } catch (ParseException e) {
                 System.out.println(data);

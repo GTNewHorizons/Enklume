@@ -15,8 +15,7 @@ public class NBTFile {
     }
 
     public NBTFile(File file, CompressionScheme scheme) throws IOException {
-        if (!file.exists())
-            throw new FileNotFoundException(file.getAbsolutePath());
+        if (!file.exists()) throw new FileNotFoundException(file.getAbsolutePath());
 
         FileInputStream fis = new FileInputStream(file);
 
@@ -34,5 +33,4 @@ public class NBTFile {
     public NBTCompound getRoot() {
         return root;
     }
-
 }

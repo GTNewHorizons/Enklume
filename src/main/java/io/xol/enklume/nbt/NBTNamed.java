@@ -19,7 +19,7 @@ public class NBTNamed extends NBTag {
             try {
                 is.readFully(n);
                 tagName = new String(n, StandardCharsets.UTF_8);
-                //System.out.println("read tag named :"+tagName);
+                // System.out.println("read tag named :"+tagName);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -34,5 +34,4 @@ public class NBTNamed extends NBTag {
         tagName = i + "";
         list = true;
     }
-
 }
