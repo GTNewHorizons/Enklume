@@ -1,7 +1,7 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -11,14 +11,14 @@ public class NBTCompound extends NBTNamed implements Iterable<NBTNamed> {
     Map<String, NBTNamed> tags = new HashMap<>();
 
     @Override
-    void feed(DataInputStream is) throws IOException {
+    void feed(ByteBuffer is) throws IOException {
         super.feed(is);
 
-        NBTag tag = NBTag.parseInputStream(is);
+        NBTag tag = NBTag.parseByteBuffer(is);
         while (tag instanceof NBTNamed) {
             NBTNamed namedTag = (NBTNamed) tag;
             tags.put(namedTag.getName(), namedTag);
-            tag = NBTag.parseInputStream(is);
+            tag = NBTag.parseByteBuffer(is);
         }
     }
 

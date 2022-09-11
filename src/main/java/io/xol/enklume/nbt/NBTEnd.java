@@ -1,12 +1,12 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 class NBTEnd extends NBTag {
 
     @Override
-    void feed(DataInputStream is) throws IOException {
+    void feed(ByteBuffer is) throws IOException {
         // Read nothing
     }
 }

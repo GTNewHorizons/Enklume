@@ -1,14 +1,14 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 public class NBTByte extends NBTNamed {
     public byte data;
 
     @Override
-    void feed(DataInputStream is) throws IOException {
+    void feed(ByteBuffer is) throws IOException {
         super.feed(is);
-        data = (byte) is.read();
+        data = is.get();
     }
 }

@@ -1,6 +1,12 @@
 package io.xol.enklume;
 
+import gnu.trove.list.array.TByteArrayList;
 import java.io.*;
+import java.lang.ref.SoftReference;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
 
@@ -8,36 +14,49 @@ public class MinecraftRegion {
 
     int[] locations = new int[1024];
     int[] sizes = new int[1024];
+    Inflater inflater = new Inflater();
 
     RandomAccessFile is;
-    private final MinecraftChunk[][] chunks = new MinecraftChunk[32][32];
+    private final List<SoftReference<MinecraftChunk>> chunks = new ArrayList<>(32 * 32);
 
     public MinecraftRegion(File regionFile) throws IOException, DataFormatException {
+        for (int i = 0; i < 32 * 32; i++) {
+            chunks.add(null);
+        }
         is = new RandomAccessFile(regionFile, "r");
         // First read the 1024 chunks offsets
         // int n = 0;
+        byte[] buffer = new byte[1024 * 4];
+        is.readFully(buffer);
         for (int i = 0; i < 1024; i++) {
-            locations[i] += is.read() << 16;
-            locations[i] += is.read() << 8;
-            locations[i] += is.read();
+            // & 0xFF to avoid negative numbers (read as unsigned byte)
+            locations[i] = (buffer[i * 4] & 0xFF) << 16;
+            locations[i] += (buffer[i * 4 + 1] & 0xFF) << 8;
+            locations[i] += buffer[i * 4 + 2] & 0xFF;
 
-            sizes[i] += is.read();
+            sizes[i] = buffer[i * 4 + 3] & 0xFF;
         }
         // Discard the timestamp bytes, we don't care.
-        byte[] osef = new byte[4];
-        for (int i = 0; i < 1024; i++) {
-            is.read(osef);
-        }
-
-        for (int x = 0; x < 32; x++) for (int z = 0; z < 32; z++) chunks[x][z] = getChunkInternal(x, z);
+        is.seek(is.getFilePointer() + 1024 * 4);
     }
 
-    int offset(int x, int z) {
+    final int offset(int x, int z) {
         return ((x & 31) + (z & 31) * 32);
     }
 
     public MinecraftChunk getChunk(int x, int z) {
-        return chunks[x][z];
+        int idx = 32 * x + z;
+        SoftReference<MinecraftChunk> ref = chunks.get(idx);
+        MinecraftChunk chunk = (ref == null) ? null : ref.get();
+        if (chunk == null) {
+            try {
+                chunk = getChunkInternal(x, z);
+            } catch (DataFormatException | IOException e) {
+                throw new RuntimeException(e);
+            }
+            chunks.set(idx, new SoftReference<>(chunk));
+        }
+        return chunk;
     }
 
     private MinecraftChunk getChunkInternal(int x, int z) throws DataFormatException, IOException {
@@ -60,20 +79,21 @@ public class MinecraftRegion {
                 byte[] compressedData = new byte[compressedLength];
                 is.read(compressedData);
 
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                TByteArrayList allBytes = new TByteArrayList();
 
                 // Unzip the ordeal
-                Inflater inflater = new Inflater();
+                inflater.reset();
                 inflater.setInput(compressedData);
 
-                byte[] buffer = new byte[4096];
+                byte[] buffer = new byte[1024 * 1024];
                 while (!inflater.finished()) {
                     int c = inflater.inflate(buffer);
-                    baos.write(buffer, 0, c);
+                    allBytes.add(buffer, 0, c);
                 }
-                baos.close();
 
-                return new MinecraftChunk(x, z, baos.toByteArray());
+                ByteBuffer byteBuffer = ByteBuffer.wrap(allBytes.toArray());
+                byteBuffer.order(ByteOrder.BIG_ENDIAN);
+                return new MinecraftChunk(x, z, byteBuffer);
             }
         }
         return new MinecraftChunk(x, z);
@@ -81,5 +101,6 @@ public class MinecraftRegion {
 
     public void close() throws IOException {
         is.close();
+        inflater.end();
     }
 }

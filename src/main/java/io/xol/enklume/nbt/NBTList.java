@@ -1,7 +1,7 @@
 package io.xol.enklume.nbt;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +12,10 @@ public class NBTList extends NBTNamed {
     public List<NBTNamed> elements = new ArrayList<>();
 
     @Override
-    void feed(DataInputStream is) throws IOException {
+    void feed(ByteBuffer is) throws IOException {
         super.feed(is);
-        type = is.read();
-        number = is.read() << 24;
-        number |= is.read() << 16;
-        number |= is.read() << 8;
-        number |= is.read();
+        type = is.get();
+        number = is.getInt();
         if (type > 0) {
             for (int i = 0; i < number; i++) {
                 NBTag tag = NBTag.createNamedFromList(type, i);
