@@ -74,7 +74,7 @@ public class MinecraftRegion {
             int compression = is.read();
             if (compression != 2) {
                 throw new DataFormatException(
-                        "\"Fatal error : compression scheme not Zlib. (\" + compression + \") at \" + is.getFilePointer() + \" l = \" + l + \" s= \" + sizes[l]");
+                        "Fatal error : compression scheme not Zlib. (" + compression + ") at " + is.getFilePointer() + " l = " + l + " s= " + sizes[l]);
             } else {
                 byte[] compressedData = new byte[compressedLength];
                 is.read(compressedData);
