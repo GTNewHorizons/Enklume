@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class NBTFloat extends NBTNamed {
+
     public float data = 0;
 
     @Override

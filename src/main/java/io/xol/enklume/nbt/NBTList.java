@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NBTList extends NBTNamed {
+
     int type;
     int number;
 
@@ -24,9 +25,9 @@ public class NBTList extends NBTNamed {
                 elements.add((NBTNamed) tag);
             }
         }
-        /*else {
-            System.out.println("Warning : found a NBTList of TAG_END !");
-        }*/
+        /*
+         * else { System.out.println("Warning : found a NBTList of TAG_END !"); }
+         */
     }
 
     // @Override

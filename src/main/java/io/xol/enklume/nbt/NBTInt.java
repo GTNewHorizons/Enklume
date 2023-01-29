@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class NBTInt extends NBTNamed {
+
     public int data;
 
     @Override

@@ -1,6 +1,5 @@
 package io.xol.enklume;
 
-import gnu.trove.list.array.TByteArrayList;
 import java.io.*;
 import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
@@ -9,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
+
+import gnu.trove.list.array.TByteArrayList;
 
 public class MinecraftRegion {
 
@@ -74,7 +75,13 @@ public class MinecraftRegion {
             int compression = is.read();
             if (compression != 2) {
                 throw new DataFormatException(
-                        "Fatal error : compression scheme not Zlib. (" + compression + ") at " + is.getFilePointer() + " l = " + l + " s= " + sizes[l]);
+                        "Fatal error : compression scheme not Zlib. (" + compression
+                                + ") at "
+                                + is.getFilePointer()
+                                + " l = "
+                                + l
+                                + " s= "
+                                + sizes[l]);
             } else {
                 byte[] compressedData = new byte[compressedLength];
                 is.read(compressedData);

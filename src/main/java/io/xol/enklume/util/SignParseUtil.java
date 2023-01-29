@@ -16,8 +16,9 @@ public class SignParseUtil {
     private static final ThreadLocal<JSONParser> threadSafeJsonParser = ThreadLocal.withInitial(JSONParser::new);
 
     /**
-     * Sign data is a mess of legacy and incompatible formats, the same save can contain multiple ways of formatting this data, this method should return
-     * something along the lines of what the actual Minecraft client could read out of it
+     * Sign data is a mess of legacy and incompatible formats, the same save can contain multiple ways of formatting
+     * this data, this method should return something along the lines of what the actual Minecraft client could read out
+     * of it
      */
     public static String parseSignData(String data) {
         if (data == null) return "";

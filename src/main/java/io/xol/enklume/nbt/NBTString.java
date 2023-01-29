@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
 public class NBTString extends NBTNamed {
+
     public String data;
 
     @Override

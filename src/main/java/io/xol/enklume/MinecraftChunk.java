@@ -1,12 +1,14 @@
 package io.xol.enklume;
 
+import java.nio.ByteBuffer;
+
 import io.xol.enklume.nbt.NBTByte;
 import io.xol.enklume.nbt.NBTByteArray;
 import io.xol.enklume.nbt.NBTCompound;
 import io.xol.enklume.nbt.NBTag;
-import java.nio.ByteBuffer;
 
 public class MinecraftChunk {
+
     NBTCompound root = null;
     int[] sectionsMap = new int[16];
 

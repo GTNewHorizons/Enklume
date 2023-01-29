@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class NBTDouble extends NBTNamed {
+
     public double data = 0;
 
     @Override

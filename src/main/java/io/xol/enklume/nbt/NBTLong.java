@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 public class NBTLong extends NBTNamed {
+
     public long data = 0;
 
     @Override

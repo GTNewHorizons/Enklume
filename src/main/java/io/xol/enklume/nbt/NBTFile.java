@@ -6,9 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.zip.GZIPInputStream;
+
 import org.apache.commons.io.IOUtils;
 
 public class NBTFile {
+
     private final NBTCompound root;
 
     public enum CompressionScheme {

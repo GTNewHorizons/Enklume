@@ -8,6 +8,7 @@ import java.nio.ByteOrder;
  * Clean code is for suckers anyway
  */
 public abstract class NBTag {
+
     abstract void feed(ByteBuffer bytes) throws IOException;
 
     public static NBTag parseByteBuffer(ByteBuffer bytes) {
@@ -46,8 +47,11 @@ public abstract class NBTag {
             lastType = Type.values()[t];
             return tag;
         } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Out of bounds type exception: " + t + " Last valid type was : " + lastType
-                    + ". Probably caused by a corrupt file. Will ignore this particular NBT entry!");
+            System.out.println(
+                    "Out of bounds type exception: " + t
+                            + " Last valid type was : "
+                            + lastType
+                            + ". Probably caused by a corrupt file. Will ignore this particular NBT entry!");
             throw new IOException("Corrupted File");
         }
     }
