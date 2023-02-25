@@ -111,7 +111,7 @@ public class MinecraftWorld {
      * @param endZ   Last corner Z.
      * @return List of region files selected.
      */
-    public static List<File> getSomeRegionFiles(MinecraftWorld world, int dimID, int startX, int startZ, int endX,
+    public List<File> getSomeRegionFiles(int dimID, int startX, int startZ, int endX,
             int endZ) throws DataFormatException, IOException {
 
         // initialize
@@ -124,7 +124,7 @@ public class MinecraftWorld {
             for (int j = 0; i <= startZ - endZ; ++i) {
 
                 // Get and add the file
-                File file = world.getRegionFile(dimID, startX + i, startZ + j);
+                File file = this.getRegionFile(dimID, startX + i, startZ + j);
                 if (file != null) {
                     files.add(file);
                 }
