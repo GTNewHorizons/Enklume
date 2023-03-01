@@ -75,6 +75,65 @@ public class MinecraftWorld {
         }
     }
 
+    /**
+     * Get a region file. Nothing more, nothing less.
+     *
+     * @param dimensionId       Dimension ID.
+     * @param regionCoordinateX X coord of region. Uses region coords, NOT block or chunk coords.
+     * @param regionCoordinateZ Z coord of region. Uses region coords, NOT block or chunk coords.
+     * @return The region file.
+     */
+    public File getRegionFile(int dimensionId, int regionCoordinateX, int regionCoordinateZ)
+            throws DataFormatException, IOException {
+
+        // If 0 (overworld) no subfolder; otherwise use the appropriate subfolder
+        String subfolder = dimensionId == 0 ? "" : "/DIM" + dimensionId;
+
+        // Get the file. If it doesn't exist, will return null
+        File regionFile = new File(
+                this.folder.getAbsolutePath() + subfolder
+                        + "/region/r."
+                        + regionCoordinateX
+                        + "."
+                        + regionCoordinateZ
+                        + ".mca");
+        return regionFile.exists() ? regionFile : null;
+    }
+
+    /**
+     * Get region files containing the regions within a rectangle, with corners startX,Z and endX,Z. These coords are
+     * region coords, NOT block or chunk coords!
+     *
+     * @param dimID  ID of the dimension in question.
+     * @param startX First corner X, must be less than or equal to endX.
+     * @param startZ First corner Z, must be less than or equal to endZ.
+     * @param endX   Last corner X.
+     * @param endZ   Last corner Z.
+     * @return List of region files selected.
+     */
+    public List<File> getSomeRegionFiles(int dimID, int startX, int startZ, int endX,
+            int endZ) throws DataFormatException, IOException {
+
+        // initialize
+        List<File> files = new ArrayList<>();
+
+        // l o o p
+        for (int i = 0; i <= startX - endX; ++i) {
+
+            // a g a i n
+            for (int j = 0; i <= startZ - endZ; ++i) {
+
+                // Get and add the file
+                File file = this.getRegionFile(dimID, startX + i, startZ + j);
+                if (file != null) {
+                    files.add(file);
+                }
+            }
+        }
+
+        return files;
+    }
+
     public List<File> getAllRegionFiles(int dimensionId) throws IOException {
         final String subfolder = dimensionId == 0 ? "" : "/DIM" + dimensionId;
         File regionFolder = new File(folder.getAbsolutePath() + subfolder + "/region");
