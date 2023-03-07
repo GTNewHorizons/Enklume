@@ -111,8 +111,8 @@ public class MinecraftWorld {
      * @param endZ   Last corner Z.
      * @return List of region files selected.
      */
-    public List<File> getSomeRegionFiles(int dimID, int startX, int startZ, int endX,
-            int endZ) throws DataFormatException, IOException {
+    public List<File> getSomeRegionFiles(int dimID, int startX, int startZ, int endX, int endZ)
+            throws DataFormatException, IOException {
 
         // initialize
         List<File> files = new ArrayList<>();
