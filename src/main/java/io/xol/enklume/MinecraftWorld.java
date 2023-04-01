@@ -118,10 +118,13 @@ public class MinecraftWorld {
         List<File> files = new ArrayList<>();
 
         // l o o p
-        for (int i = 0; i <= startX - endX; ++i) {
+        // This should loop once per chunk between start and end
+        // 1 10 = loops i = [0, 9]
+        // -4 8 = loops i = [0, 11]
+        for (int i = 0; i < endX - startX; ++i) {
 
             // a g a i n
-            for (int j = 0; i <= startZ - endZ; ++i) {
+            for (int j = 0; j < endZ - startZ; ++j) {
 
                 // Get and add the file
                 File file = this.getRegionFile(dimID, startX + i, startZ + j);
